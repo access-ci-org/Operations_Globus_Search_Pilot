@@ -1,0 +1,12 @@
+---
+groups_list:
+  - {name: 'admin'}
+
+users_list: 
+  - {name: 'software', common: 'Software User', groups: 'admin', shell: '/bin/bash'}
+  - {name: 'navarro', common: 'JP Navarro', groups: 'admin' ,shell: '/bin/bash'}
+  - {name: 'eblau', common: 'Eric Blau', groups: 'admin' ,shell: '/bin/bash'}
+  - {name: 'stebird', common: 'Steven Bird', groups: 'admin' ,shell: '/bin/bash'}
+  - {name: 'wellsaar', common: 'Aaron Wells', groups: 'admin' ,shell: '/bin/bash'}
+
+sshd_server_ops_staff: 'ubuntu software navarro eblau stebird wellsaar'

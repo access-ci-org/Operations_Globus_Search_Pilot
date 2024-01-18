@@ -1,0 +1,9 @@
+---
+
+- name: Install client rpms
+  become: yes
+  ansible.builtin.apt:
+    name: "{{ item.name }}"
+    state: present
+  with_items:
+    - {name: 'postgresql'}

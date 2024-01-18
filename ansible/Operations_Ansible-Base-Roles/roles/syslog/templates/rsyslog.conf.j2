@@ -1,0 +1,57 @@
+# # {{ ansible_managed }}
+# rsyslog configuration file
+
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+$ModLoad imklog   # provides kernel logging support (previously done by rklogd)
+ 
+$DefaultNetstreamDriverCAFile /etc/ssl/certs/incommon-ssl.pem
+$DefaultNetstreamDriver gtls
+$ActionSendStreamDriverMode 1
+$ActionSendStreamDriverAuthMode anon
+ 
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+ 
+$IncludeConfig /etc/rsyslog.d/*.conf
+  
+$OmitLocalLogging on
+ 
+$IMJournalStateFile imjournal.state
+ 
+# Log all messages to single location.
+*.*                                                      /var/log/allmessages
+ 
+# Breakout login attempts
+authpriv.*                                              /var/log/secure
+   
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+   
+     
+# Log cron stuff
+cron.*                                                  /var/log/cron
+      
+# Everybody gets emergency messages
+#*.emerg                                                 *
+       
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+        
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+         
+$WorkDirectory /var/spool/rsyslog # where to place spool files
+$ActionQueueFileName fwdRule1 # unique name prefix for spool files
+$ActionQueueMaxDiskSpace 1g   # 1gb space limit (use as much as possible)
+$ActionQueueSaveOnShutdown on # save messages to disk on shutdown
+$ActionQueueType LinkedList   # run asynchronously
+$ActionResumeRetryCount -1    # infinite retries if host is down
+          
+
+{% for server in syslog_logservers %}
+*.* @{{ server }}
+{% endfor %}
+
+
+
+# ### end of the forwarding rule ###

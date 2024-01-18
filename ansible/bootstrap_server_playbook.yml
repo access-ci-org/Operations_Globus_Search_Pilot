@@ -1,0 +1,30 @@
+- hosts: tag_Name_Ops_Sysops
+  vars:
+    enable_selinux: false
+    pause_to_login: false
+    build_duo: true
+#  vars_files: duo_secrets.yml
+  pre_tasks:
+    - include_vars: bootstrap_vars.yml
+    - include_tasks: bootstrap_prereqs.yml
+  post_tasks:
+    - include_vars: bootstrap_vars.yml
+    - include_tasks: bootstrap.yml
+  roles:
+   - { role: admin_accounts, tags: admin_accounts}
+   - { role: sshd, tags: [ "sshd", "ssh", "authentication" ] }
+     #   - { role: sshd_admin, tags: [ "sshd", "ssh", "authentication" ] }
+     #   - { role: pam, tags: [ "pam", "authentication" ] }
+   - { role: syslog, tags: syslog }
+     #   - { role: fail2ban, tags: [ "fail2ban", "network" ] }
+   - { role: sudo, tags: [ "sudo", "authentication" ] }
+     #   - role: duo
+     #     vars:
+     #       duo_integration_key: "{{ DUO_IKEY }}"
+     #       duo_secret_key: "{{ DUO_SKEY }}"
+     #       duo_api_hostname: "api-616d966d.duosecurity.com"
+  # - { role: chronyd, tags: chronyd }
+  # - { role: git, tags: git}
+  become: true
+  become_user: root
+  gather_facts: yes

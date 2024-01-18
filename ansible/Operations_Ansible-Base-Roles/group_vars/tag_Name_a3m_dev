@@ -1,0 +1,29 @@
+---
+
+pw_root: 
+pw_ansible: 
+ansible_pub_key: "{{lookup ('file', '/home/ansible/.ssh/sysops-aws-ansible.pub')}}"
+
+groups_list:
+  - {name: 'xsede'}
+  - {name: 'pixo'}
+
+users_list: 
+  - {name: 'grogers', common: 'Gary Rogers', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'cubbison', common: 'Burt Cubbison', groups: 'xsede' ,shell: '/bin/bash'}
+  - {name: 'esoriano', common: 'Ester Soriano', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'light', common: 'Rob Light', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'speckins', common: 'Steve Peckins', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'cmarnold', common: 'Carrie Arnold', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'alinab', common: 'Alina Banerjee', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'basucar', common: 'Brian Sterner', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'git', common: 'Git User', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'benyoung', common: 'Ben Young', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'alexkuhl', common: 'Alex Kuhl', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'martinkane', common: 'Martin Kane', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'mshapiro', common: 'Michael Shapiro', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'jeberger', common: 'Josh Berger', groups: 'xsede', shell: '/bin/bash'}
+
+sshd_server_ops_staff: 'ansible grogers cubbison esoriano light speckins cmarnold alinab basucar git benyoung alexkuhl martinkane mshapiro jeberger'
+
+sshd_matchusers: "Match User ansible,git\n\tPubKeyAuthentication yes"

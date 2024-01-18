@@ -1,0 +1,22 @@
+- name: Install distribution software
+  apt:
+    state: present
+    pkg:
+      - git
+      - nginx
+      - postgresql-client-common
+      - postgresql-client-14
+      - libpq-dev
+      - memcached
+      - libmemcached-tools
+      - apache2-dev
+
+# Must run to set Python facts needed for subsequent configurations
+- include_tasks: python3_native.yml
+
+# Must run to set Warhouse facts needed for subsequent configurations
+- include_vars: dgpf_vars.yml
+
+- include_tasks: dgpf_code.yml
+
+- include_tasks: dgpf.yml

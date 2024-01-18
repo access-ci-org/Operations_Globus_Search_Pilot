@@ -1,0 +1,5 @@
+---
+syslog_logservers:
+  - "172.31.21.20:10514"
+
+rsyslog_mode: rsyslog_client

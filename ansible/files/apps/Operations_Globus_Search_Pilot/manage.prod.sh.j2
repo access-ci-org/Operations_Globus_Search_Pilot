@@ -1,0 +1,9 @@
+#!/bin/bash
+APP_HOME="{{ app_home }}"
+APP_NAME="{{ app_name }}"
+APP_DJANGO="{{ app_home }}/PROD/{{ app_source_name }}"
+
+export APP_CONFIG=$APP_HOME/conf/django_prod_mgmt.conf
+source $APP_HOME/python/bin/activate
+cd $APP_DJANGO
+exec python3 manage.py "$@"

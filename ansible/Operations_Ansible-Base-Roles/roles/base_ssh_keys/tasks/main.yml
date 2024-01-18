@@ -1,0 +1,43 @@
+---
+- name: Set Root PW
+  become: yes
+  user: 
+    name: root 
+    update_password: always 
+    password: "{{ pw_root }}"
+
+- name: Create Ansible User
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    comment: "{{ item.common }}"
+    groups: "{{ item.groups }}"
+    shell: "{{ item.shell }}"
+  with_items:
+    - {name: 'ansible', common: 'Ansible User', groups: 'wheel', shell: '/bin/bash'}
+
+- name: Set Ansible PW
+  become: yes
+  user: 
+    name: ansible 
+    update_password: always 
+    password: "{{ pw_ansible }}"
+
+- name: Copy public key (var- ansible_pub_key)
+  become: yes
+  authorized_key:
+     user: ansible
+     state: present
+     key: "{{ ansible_pub_key }}"
+     #key: "{{ lookup('file', '/home/ansible/.ssh/sysops-aws-ansible.pub') }}"
+
+- name: Add ansible to NOPASSWD sudo
+  become: yes
+  blockinfile:
+    dest: /etc/sudoers.d/ansible
+    create: yes
+    state: present
+    block: |
+      {{ item }}
+  with_items:
+    - "ansible ALL=(ALL) NOPASSWD:ALL"

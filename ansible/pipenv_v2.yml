@@ -1,0 +1,229 @@
+# NOTES
+#   This pipenv_v2.yml is locked to a Python release that doesn't change since it's baked into the pipenv_venv_dir path
+#
+#   The desired Python must already exist and be referenced in:
+#       base_python_base (directory)
+#       base_python_version (x.y)
+#       base_python_release (x.y.z)
+#
+#   If the target Pipenv Python binary doesn't exist or the Pipfile's are different, rebuild it
+#   Otherwise, just link to it
+# 
+
+- set_fact:
+    pipenv_workon_home: "/soft/python-pipenv"
+
+- set_fact:
+    pipenv_venv_dir: "{{ pipenv_workon_home }}/python-{{ base_python_release }}-{{ pipenv_config_name }}"
+
+- set_fact:
+    pipenv_venv_python: "{{ pipenv_venv_dir }}/bin/python3"
+
+- name: Pipenv build configuration
+  vars:
+    msg: |
+      pipenv_project_home       = {{ pipenv_project_home }}
+      pipenv_project_name       = {{ pipenv_project_name }}
+      pipenv_config_source      = {{ pipenv_config_source }}
+      pipenv_config_name        = {{ pipenv_config_name }}
+      base_python_release       = {{ base_python_release }} (desired)
+      pipenv_venv_dir           = {{ pipenv_venv_dir }}
+  debug:
+    msg: "{{ msg.split('\n')[:-1] }}"
+
+- name: Create target Pipenv directories
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory 
+    owner: software
+    group: admin
+    mode: 0755
+  with_items:
+    - "{{ pipenv_workon_home }}"
+    - "{{ pipenv_venv_dir }}"
+    - "{{ pipenv_project_home }}"
+
+- name: Check if Pipenv Python exists
+  stat:
+    path: "{{ pipenv_venv_python }}"
+  register: pipenv_venv_python_stat
+
+- name: BLOCK, If venv Python exists but Pipfile* files are different, move pipenv_venv_dir asside to rebuild
+  when: pipenv_venv_python_stat.stat.exists
+  block:
+    # Local source files
+    - stat:
+        path: "{{ pipenv_config_source }}/Pipfile"
+        checksum_algorithm: sha1
+      delegate_to: localhost
+      run_once: true
+      register: src_pip_sha_result
+
+    - stat:
+        path: "{{ pipenv_config_source }}/Pipfile.lock"
+        checksum_algorithm: sha1
+      delegate_to: localhost
+      run_once: true
+      register: src_lock_sha_result
+
+    # Remote files
+    - stat:
+        path: "{{ pipenv_venv_dir }}/Pipfile"
+        checksum_algorithm: sha1
+      register: dst_pip_sha_result
+
+    - stat:
+        path: "{{ pipenv_venv_dir }}/Pipfile.lock"
+        checksum_algorithm: sha1
+      register: dst_lock_sha_result
+
+    - name: Get timestamp
+      ansible.builtin.command: date +%F_%T
+      register: date_stamp
+
+    - name: The Pipenv checksums
+      vars:
+        msg: |
+          Source      Pipenv      = {{ src_pip_sha_result.stat.checksum | default("N/A") }}
+          Destination Pipenv      = {{ dst_pip_sha_result.stat.checksum | default("N/A") }}
+          Source      Pipenv.lock = {{ src_lock_sha_result.stat.checksum | default("N/A") }}
+          Destination Pipenv.lock = {{ dst_lock_sha_result.stat.checksum | default("N/A") }}
+      debug:
+        msg: "{{ msg.split('\n')[:-1] }}"
+
+    - name: Move Pipenv if Pipfile* files changed
+      become: true
+      become_user: software
+      when: not src_pip_sha_result.stat.checksum is defined or not src_lock_sha_result.stat.checksum is defined or not dst_pip_sha_result.stat.checksum is defined or not dst_lock_sha_result.stat.checksum is defined or not src_pip_sha_result.stat.checksum == dst_pip_sha_result.stat.checksum or not src_lock_sha_result.stat.checksum == dst_lock_sha_result.stat.checksum
+      ansible.builtin.command: "mv -v {{ pipenv_venv_dir }} {{ pipenv_venv_dir }}.{{ date_stamp.stdout }}"
+
+    - name: Create target directories if we mv'ed it
+      become: true
+      file:
+        path: "{{ item }}"
+        state: directory 
+        owner: software
+        group: admin
+        mode: 0755
+      with_items:
+        - "{{ pipenv_venv_dir }}"
+
+# This check can't be inside the above block because they register the values referenced by the block's when clause
+- name: Recheck if Pipenv Python exists
+  stat:
+    path: "{{ pipenv_venv_python }}"
+  register: pipenv_venv_python_stat
+
+- name: BLOCK Build pipenv
+  when: not pipenv_venv_python_stat.stat.exists
+  block:
+    - name: Pipenv re-build configuration
+      vars:
+        msg: |
+          ******* REBUILDING Pipenv: {{ pipenv_venv_dir }} *******
+      debug:
+        msg: "{{ msg.split('\n')[:-1] }}"
+
+    - set_fact: 
+        piplock_path: "{{ playbook_dir }}/{{ pipenv_config_source }}/Pipfile.lock"
+
+#   - debug: var=pipenv_config_source
+#   - debug: var=playbook_dir
+#   - debug: var=piplock_path
+
+    - name: Check for Pipfile.lock
+      #local_action: stat path= "{{ playbook_dir }}/{{ pipenv_config_source }}/Pipfile.lock"
+      local_action: stat path={{ piplock_path }}
+      register: pipenv_local_pipfile_lock_stat
+ 
+#   - debug: var=pipenv_local_pipfile_lock_stat
+
+    - name: Set Pipfile* file list
+      when: pipenv_local_pipfile_lock_stat.stat.exists
+      set_fact:
+        pipfile_files: {'Pipfile', 'Pipfile.lock'} 
+
+    - name: Set only Pipfile in file list
+      when: pipenv_local_pipfile_lock_stat.stat.exists == False
+      set_fact:
+        pipfile_files: {'Pipfile'} 
+
+    - name: Install Pipfile* files
+      become: true
+      become_user: software
+      copy:
+        src: "{{ pipenv_config_source }}/{{ item }}"
+        dest: "{{ pipenv_venv_dir }}/{{ item }}"
+        owner: software
+        group: admin
+        mode: 0644
+      with_items: "{{ pipfile_files }}"
+
+    - name: Install .venv file
+      become: true
+      become_user: software
+      copy:
+        content: "{{ pipenv_venv_dir }}"
+        dest: "{{ pipenv_venv_dir }}/.venv" 
+
+    - name: Build pipenv
+      become: true
+      become_user: software
+      script: pipenv-build.sh {{ base_python_base }}
+      register: pipenv_build_script_output
+      args:
+        chdir: "{{ pipenv_venv_dir }}"
+
+    - name: Fetch Pipfile.lock
+      when: pipenv_local_pipfile_lock_stat.stat.exists == False
+      fetch:
+        src: "{{ pipenv_venv_dir }}/Pipfile.lock"
+        dest: "{{ pipenv_config_source }}/"
+        fail_on_missing: yes
+        flat: yes
+
+    - debug: msg= "Be sure to git add {{ pipenv_config_source }}/Pipfile.lock; git commit"
+      when: pipenv_local_pipfile_lock_stat.stat.exists == False
+
+    - name: Pipenv build stdout
+      vars:
+        msg: |
+          pipenv-build.sh stdout: {{ pipenv_build_script_output.stdout }}
+      debug:
+        msg: "{{ msg.split('\n')[:-1] }}"
+      when: debug_messages|default(false)|bool == true
+
+#
+# Now just setup the Project to match and point to the target Pipenv
+#
+- name: Install Pipfile* files
+  become: true
+  become_user: software
+  copy:
+    src: "{{ pipenv_config_source }}/{{ item }}"
+    dest: "{{ pipenv_project_home }}/{{ item }}"
+    owner: software
+    group: admin
+    mode: 0644
+  with_items:
+    - Pipfile
+    - Pipfile.lock
+
+- name: Install .venv file
+  become: true
+  become_user: software
+  copy:
+    dest: "{{ pipenv_project_home }}/.venv" 
+    content: "{{ pipenv_venv_dir }}"
+
+- name: Create python dir link
+  become: true
+  become_user: software
+  file:
+    path: "{{ pipenv_project_home }}/python"
+    src: "{{ pipenv_venv_dir }}"
+    state: link
+    setype: httpd_user_ra_content_t
+    follow: false
+    force: yes

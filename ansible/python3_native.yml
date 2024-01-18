@@ -1,0 +1,47 @@
+---
+#
+- name: Install Python3
+  apt:
+    state: present
+    pkg:
+      - python3
+      - python3-pip
+
+#- name: Upgrade pip
+#  ansible.builtin.command: "pip install --upgrade pip"
+
+- name: Install pipenv
+  ansible.builtin.command: "pip install pipenv"
+
+- name: Query Python version
+  ansible.builtin.command: "python3 -V"
+  register: python3_version_raw
+
+- name: Default Python release x.y.z
+  set_fact:
+    base_python_release: "{{ python3_version_raw.stdout.split(' ')[1].split('.')[0:2] | join('.') }}"
+
+- name: Default Python version x.y
+  set_fact:
+    base_python_version: "{{ python3_version_raw.stdout.split(' ')[1].split('.')[0:1] | join('.') }}"
+
+- set_fact:
+    base_python_base: "/usr"
+    base_python_bin: "/usr/bin/python3"
+    base_python_libpy_dir: "/usr/lib/python3.10/"
+
+- name: Check if base Python exists
+  stat:
+    path: "{{ base_python_bin }}"
+  register: base_python
+
+- name: Show needed Python
+  vars:
+    msg: |
+      Version   = {{ base_python_version }}
+      Release   = {{ base_python_release }}
+      Base dir  = {{ base_python_base }}
+      Libpy dir = {{ base_python_libpy_dir }}
+      Exists    = {{ base_python.stat.exists }}
+  debug:
+    msg: "{{ msg.split('\n')[:-1] }}"

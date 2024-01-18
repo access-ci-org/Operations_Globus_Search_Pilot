@@ -1,0 +1,18 @@
+- set_fact: swapfile="/swapfile"
+  when: swapfile is undefined
+
+- name: Create swap if have less than 1G
+  become: true
+  shell: "dd if=/dev/zero of={{ swapfile }} bs=256M count={{ (swap_gb*4) }} && chmod 600 {{ swapfile }} && mkswap {{ swapfile }} && swapon {{ swapfile }}"
+  when: ansible_swaptotal_mb == 0
+
+- name: Configure swap in fstab
+  become: true
+  mount:
+    name: none
+    src: "{{ swapfile }}"
+    fstype: swap
+    opts: sw
+    passno: 0
+    dump: "0"
+    state: present

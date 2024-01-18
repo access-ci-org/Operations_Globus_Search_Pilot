@@ -1,0 +1,11 @@
+---
+
+- name: Install base_sshd_config
+  become: yes
+  template: 
+    src: "{{ sshd_template_file }}"
+    dest: /etc/ssh/sshd_config
+    owner: root 
+    group: root 
+    backup: true
+  notify: Restart SSHD

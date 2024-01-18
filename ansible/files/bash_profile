@@ -1,0 +1,18 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PYES=$(shopt -s nullglob;echo /soft/python/*)
+if [ "$PYES" != "" ]; then
+    PYTHON="${PYES##* }"
+    export PATH=$PYTHON/bin:/usr/pgsql-13/bin/:$PATH
+    export LD_LIBRARY_PATH=$PYTHON/lib
+fi
+
+export WORKON_HOME=/soft/python-pipenv
+export EDITOR=vi

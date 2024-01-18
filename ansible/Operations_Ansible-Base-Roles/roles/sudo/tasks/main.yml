@@ -1,0 +1,22 @@
+---
+
+- name: sudoers lecture file
+  become: yes
+  copy:
+    src: sudoers.lecture
+    dest: /etc/sudoers.lecture
+    owner: root
+    group: root
+    mode: 0755
+    backup: yes
+
+- name: Add wheel group to local sudoers file
+  become: yes
+  blockinfile:
+    dest: /etc/sudoers.d/{{ inventory_hostname }}
+    create: yes
+    state: present
+    block: |
+      {{ item }}
+  with_items:
+    - "%wheel {{ inventory_hostname }} = ALL"

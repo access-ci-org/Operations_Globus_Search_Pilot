@@ -1,0 +1,7 @@
+---
+
+- name: newaliases
+  command: newaliases
+
+- name: restart_postfix
+  command: systemctl restart postfix

@@ -1,0 +1,12 @@
+- hosts: globus-search
+  gather_facts: yes
+  become: true
+  become_user: root
+
+  vars:
+    enable_selinux: false
+
+  tasks:
+    - include_vars: passwords.yml
+
+    - include_tasks: webserver.yml

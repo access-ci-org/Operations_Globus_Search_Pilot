@@ -1,0 +1,18 @@
+---
+- name: Stop CHRONYD
+  service:
+    name: chronyd
+    state: stopped
+  become: yes
+
+- name: Start CHRONYD
+  service:
+    name: chronyd
+    state: started
+  become: yes
+
+- name: Restart CHRONYD
+  service:
+    name: chronyd
+    state: restarted
+  become: yes

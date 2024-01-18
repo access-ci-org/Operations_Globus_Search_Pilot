@@ -1,0 +1,148 @@
+##################################
+#  Configure OS
+##################################
+    - name: Set hostname
+      become: true
+      become_user: root
+      ansible.builtin.command: "hostnamectl set-hostname {{ inventory_hostname }}"
+
+    - include_tasks: swap.yml
+
+##################################
+#  Required packages
+##################################
+    - name: Install packages
+      become: yes
+      apt:
+          state: present
+          pkg:
+            - acl
+            - git
+            - docker.io
+            - docker-compose
+            - docker-compose-v2
+            - docker-doc
+            - podman-docker
+            - nginx
+            - python3
+            - python3-pip
+            - tzdata
+
+##################################
+#  Not wanted packages
+#     Ignore uninstall per https://stackoverflow.com/questions/45023363/what-is-docker-io-in-relation-to-docker-ce-and-docker-ee-now-called-mirantis-k
+##################################
+#   - name: Uninstall packages
+#     become: yes
+#     apt:
+#         state: absent
+#         pkg:
+#           - docker.io
+#           - docker-compose
+#           - docker-compose-v2
+#           - docker-doc
+#           - podman-docker
+
+##################################
+#  Create accounts
+##################################
+# NOW DONE WITH ROLES
+#    - name: Define 'admin' group
+#      group:
+#        name: admin
+#        gid: "{{ admin_gid }}"
+#        state: present
+
+# NOW DONE WITH ROLES
+#    - name: Define administrator accounts
+#      user:
+#        name: "{{ item.name }}"
+#        uid: "{{ item.uid }}"
+#        group: admin
+#        comment: "{{ item.comment }}"
+#        create_home: yes
+#        state: present
+#      with_items: "{{ users_list }}"
+
+    - name: Setup administrator .ssh directory
+      file:
+        path: /home/{{ item.name }}/.ssh
+        owner: "{{ item.name }}"
+        group: admin
+        mode: 0700
+        state: directory
+      with_items: "{{ users_list }}"
+      
+    - name: Populate authorized_keys
+      copy:
+        src: "authorized_keys/{{ item.name }}"
+        dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+        owner: "{{ item.name }}"
+        mode: 0600
+      with_items: "{{ users_list }}"
+    
+    - name: Copy software/.bash_profile
+      copy:
+        src: bash_profile
+        dest: /home/software/.bash_profile
+        owner: software
+        group: admin
+        mode: 0644
+        backup: yes
+        force: yes
+
+    - name: Put software/.ssh keys in place
+      copy:
+        src: files/certs/software_id_rsa.pem
+        dest: /home/software/.ssh/id_rsa
+        owner: software
+        mode: 0600
+
+    - name: Recognize software.xsede.org ssh host
+      become: yes
+      blockinfile:
+        path: /home/software/.ssh/known_hosts
+        create: yes
+        mode: 0644
+        owner: software
+        block: |
+          software.xsede.org,3.17.194.2 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBALJBaLDkYZ1ZMG455P9z6o5vShmzFVSPd9yNOlGDP2mCUu0H6Auq0fRamDwylh8xBHsOkNNLSmyKZZanzau/jQ=
+
+##################################
+#  Authorize admin sudo
+##################################
+    - name: Give admins sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%admin'
+        line: '%admin    ALL=(ALL)   NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+##################################
+#  User environment customization
+##################################
+    - name: Define sudo root aliases
+      lineinfile:
+        dest: "/home/{{ item.name }}/.bashrc"
+        state: present
+        regexp: '^alias root'
+        line: 'alias root="sudo -i -u root"'
+      with_items: "{{ users_list }}"
+
+    - name: Define sudo software aliases
+      lineinfile:
+        dest: "/home/{{ item.name }}/.bashrc"
+        state: present
+        regexp: '^alias software'
+        line: 'alias software="sudo -i -u software"'
+      with_items: "{{ users_list }}"
+
+##################################
+#  Disable sftp
+##################################
+    - name: Disable sshd sftp
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^(Subsystem\s+sftp\s+.*)'
+        replace: '#\1'

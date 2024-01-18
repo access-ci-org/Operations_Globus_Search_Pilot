@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  {{ ansible_managed }} -->
+<direct>
+  <rule priority="1" table="filter" ipv="ipv4" chain="INPUT">-m tcp -p tcp -s 192.249.7.25 --dport 22 -j ACCEPT</rule>
+{% if firewalld_enable_ping %}
+  <rule priority="0" table="filter" ipv="ipv4" chain="IN_drop_allow">-p icmp -m icmp --icmp-type 8 -j ACCEPT</rule>
+{% endif %}
+</direct>

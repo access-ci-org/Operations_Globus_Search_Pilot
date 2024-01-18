@@ -1,0 +1,17 @@
+tag_Name_Ops_Sysops:
+  vars:
+    AMAZON_RDS_HOST_TEST: xyz
+    AMAZON_RDS_HOST_PROD: opsdb-dev.cluster-clabf5kcvwmz.us-east-2.rds.amazonaws.com
+    AMAZON_RDS_PORT: 5432
+    restart_services: true
+  children:
+    search-pilot:
+      vars:
+        pipenv_config_dgpf: files/pipenv/opsapi-env3
+        dgpf_tag: v0.1.0
+      hosts:
+        search-pilot.access-ci.org:
+          ansible_host: 3.19.165.63
+          ansible_port: 22
+#         ansible_user: ubuntu
+#         ansible_ssh_private_key_file: ~/.ssh/accessops-aws-root.pem

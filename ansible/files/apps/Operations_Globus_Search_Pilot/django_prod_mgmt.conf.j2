@@ -1,0 +1,19 @@
+{
+    "DEBUG": true,
+    "CACHE_SERVER": false,
+    "ALLOWED_HOSTS": ["*"],
+    "DB_HOSTNAME_READ": "{{ AMAZON_RDS_HOST_PROD }}",
+    "DB_HOSTNAME_WRITE": "{{ AMAZON_RDS_HOST_PROD }}",
+    "DJANGO_USER": "info_django",
+    "DJANGO_PASS": "{{ DJANGO_PASS }}",
+    "DJANGO_SECRET_KEY": "{{ DJANGO_SECRET_KEY }}",
+    "SETTINGS_MODE": "ROUTER",
+    "STATIC_ROOT": "{{ app_home }}/www/static",
+    "G2_LOG": "{{ app_home }}/var/django_mgmt.log",
+    "DB_LOG": "{{ app_home }}/var/django_mgmt.db.log",
+    "SYSLOG_SOCK": "/dev/log",
+    "API_BASE": "/dgpf1",
+    "SUB_SITE": "dgpf1/",
+    "APP_LOG": "/soft/globus_search-1.0/var/dgpf.log",
+    "APP_VERSION": "v0.1.x"
+}

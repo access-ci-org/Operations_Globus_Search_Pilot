@@ -1,0 +1,68 @@
+##################################
+#  Bootstrap Python3
+##################################
+#   - name: If missing, install Python3
+#     raw: test -e /usr/bin/python || (apt -y update && NEEDRESTART_MODE=automatically apt install -y python3 && update-alternatives --install /usr/bin/python python /usr/bin/python3 1)
+#     changed_when: False
+
+    - name: APT update
+      become: yes
+      apt:
+        update_cache: yes
+
+    - name: Install Python3
+      become: yes
+      apt:
+        state: present
+        pkg:
+          - python3
+
+##################################
+#  Install SELinux (Base_Roles requires it)
+##################################
+    - name: Install SELinux
+      become: yes
+      apt:
+        state: present
+        pkg:
+        - policycoreutils
+        - selinux-utils
+        - selinux-basics
+        - python3-selinux
+
+# Only enable SELinux if the enable_selinux var has been set to true
+    - name: "Enable SELinux"
+      block:
+#Using permissive mode for the moment to see how it goes on ubuntu
+#default policy is "default" not "targeted" on debian
+        - name: Put SELinux in permissive mode, logging actions that would be blocked.
+          ansible.posix.selinux:
+            #policy: targeted
+            policy: default
+            state: permissive
+          register: selinux_return
+
+        - name: reboot machine if required
+          reboot:
+          when: selinux_return.reboot_required
+      when: enable_selinux == true
+
+
+##################################
+#  Install /lib64 symlink to /usr/lib/aarch64-linux-gnu/
+##################################
+
+    - name: Create a symbolic link
+      ansible.builtin.file:
+        src: /usr/lib/aarch64-linux-gnu/
+        dest: /lib64
+        #owner: foo
+        #group: foo
+        state: link
+      become: yes
+
+
+    - name: Pause for 1 minutes to log in just in case
+      ansible.builtin.pause:
+        minutes: 1
+      when: pause_to_login

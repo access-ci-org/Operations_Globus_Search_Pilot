@@ -1,0 +1,207 @@
+---
+
+pw_root: 
+pw_ansible: 
+ansible_pub_key: "{{lookup ('file', '/home/ansible/.ssh/sysops-aws-ansible.pub')}}"
+host_name: xras.xsede.org
+
+groups_list:
+  - {name: 'xsede'}
+  - {name: 'pixo'}
+
+users_list: 
+  - {name: 'grogers', common: 'Gary Rogers', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'cubbison', common: 'Burt Cubbison', groups: 'xsede' ,shell: '/bin/bash'}
+  - {name: 'esoriano', common: 'Ester Soriano', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'light', common: 'Rob Light', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'speckins', common: 'Steve Peckins', groups: 'wheel', shell: '/bin/bash'}
+  - {name: 'cmarnold', common: 'Carrie Arnold', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'alinab', common: 'Alina Banerjee', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'basucar', common: 'Brian Sterner', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'git', common: 'Git User', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'benyoung', common: 'Ben Young', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'alexkuhl', common: 'Alex Kuhl', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'martinkane', common: 'Martin Kane', groups: 'pixo', shell: '/bin/bash'}
+  - {name: 'deploy', common: 'Deploy User', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'mshapiro', common: 'Michael Shapiro', groups: 'xsede', shell: '/bin/bash'}
+  - {name: 'jeberger', common: 'Josh Berger', groups: 'xsede', shell: '/bin/bash'}
+
+sshd_server_ops_staff: 'ansible grogers cubbison deploy esoriano light speckins cmarnold alinab basucar git benyoung alexkuhl martinkane jeberger mshapiro'
+
+sshd_matchusers: "Match User ansible,git,deploy\n\tPubKeyAuthentication yes"
+
+postfix_hostname: 'xras.xsede.org'
+
+git_version: 2.16.4
+
+
+
+cron_files:  []
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xd_advance_adjustment.pl',
+#     dest: 'xd_advance_adjustment.pl',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xd_project_inactivation.pl',
+#     dest: 'xd_project_inactivation.pl',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xd_account_reactivation.pl',
+#     dest: 'xd_account_reactivation.pl',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xd_create_jobs_summarized_by_day_mv.pl',
+#     dest: 'xd_create_jobs_summarized_by_day_mv.pl',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xras_xsede_mark_as_deleted_incomplete_actions.rb',
+#     dest: 'xras_xsede_mark_as_deleted_incomplete_actions.rb',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xd_final_report_notifications.pl',
+#     dest: 'xd_final_report_notifications.pl',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'metrics_daily_report.rb',
+#     dest: 'metrics_daily_report.rb',
+#     root: '/home/deploy/cron'
+#    }
+#  - {user: 'deploy',
+#     group: 'deploy',
+#     mode: '0700',
+#     src: 'xras_delete_anonymous_AM_roles.rb',
+#     dest: 'xras_delete_anonymous_AM_roles.rb',
+#     root: '/home/deploy/cron'
+#    }
+
+cron_jobs: []
+#  - {name: 'XDCDB advance adjustments', 
+#     job: '/home/deploy/cron/xd_advance_adjustment.pl -m production', 
+#     user: 'deploy',
+#     minute: '45',
+#     hour: '0',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XDCDB project inactivation', 
+#     job: '/home/deploy/cron/xd_project_inactivation.pl -ip', 
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '20',
+#     day: '*',
+#     month: '*',
+#     weekday: '0,2,4',
+#     state: 'present'
+#    }
+#  - {name: 'XDCDB account reactivation', 
+#     job: '/home/deploy/cron/xd_account_reactivation.pl -m production', 
+#     user: 'deploy',
+#     minute: '30',
+#     hour: '0',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XDCDB project inactivation notifications', 
+#     job: '/home/deploy/cron/xd_project_inactivation.pl', 
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '16',
+#     day: '*',
+#     month: '*',
+#     weekday: '1-6',
+#     state: 'present'
+#    }
+#  - {name: 'XDCDB jobs materialized view', 
+#     job: '/home/deploy/cron/xd_create_jobs_summarized_by_day_mv.pl', 
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '0',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XSEDE mark Incomplete actions as deleted on the fifth of every quarter', 
+#     job: '/home/deploy/cron/xras_xsede_mark_as_deleted_incomplete_actions.rb.null', 
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '23',
+#     day: '5',
+#     month: '1,4,7,10',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XSEDE/XRAS final report notifications', 
+#     job: '/home/deploy/cron/xd_final_report_notifications.pl -mode production', 
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '6',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XSEDE metrics - daily report - 1', 
+#     job: '/home/deploy/cron/metrics_daily_report.rb.null', 
+#     user: 'deploy',
+#     minute: '32',
+#     hour: '7',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XSEDE metrics - daily report - 2', 
+#     job: '/home/deploy/cron/metrics_daily_report.rb.null', 
+#     user: 'deploy',
+#     minute: '2',
+#     hour: '13',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XDCDB Admin - refresh materialized view for searches', 
+#     job: "/bin/psql -h tgcdb.xsede.org -U xdcdb_admin -c 'REFRESH MATERIALIZED VIEW xdcdb_admin.people_logins_mv' teragrid >/dev/null", 
+#     user: 'deploy',
+#     minute: '*/15',
+#     hour: '*',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }
+#  - {name: 'XSEDE delete anonymous AM roles', 
+#     job: '/home/deploy/cron/xras_delete_anonymous_AM_roles.rb.null',
+#     user: 'deploy',
+#     minute: '0',
+#     hour: '*/8',
+#     day: '*',
+#     month: '*',
+#     weekday: '*',
+#     state: 'present'
+#    }

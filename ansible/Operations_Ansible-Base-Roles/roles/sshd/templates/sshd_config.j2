@@ -1,0 +1,49 @@
+# {{ ansible_managed }}
+
+Protocol {{ sshd_protocol }}
+Port {{ sshd_port }}
+
+UsePrivilegeSeparation {{ sshd_useprivilegeseparation }}
+
+{% for value in sshd_hostkey %}
+HostKey {{ value }}
+{% endfor %}
+
+LogLevel {{ sshd_loglevel }}
+
+
+SyslogFacility {{ sshd_syslogfacility }}
+#RSAAuthentication {{ sshd_rsaauthentication }}
+PermitRootLogin {{ sshd_permitrootlogin }}
+PasswordAuthentication {{ sshd_passwordauthentication }}
+HostbasedAuthentication {{ sshd_hostbasedauthentication }}
+IgnoreUserKnownHosts {{ sshd_ignoreuserknownhosts }}
+IgnoreRhosts {{ sshd_ignorerhosts }}
+ChallengeResponseAuthentication {{ sshd_challengeresponseauthentication }}
+UsePAM {{ sshd_usepam }}
+
+{% for value in sshd_acceptenv %}
+AcceptEnv {{ value }}
+{% endfor %}
+
+
+X11Forwarding {{ sshd_x11forwarding }}
+X11UseLocalhost {{ sshd_x11uselocalhost }}
+XAuthLocation {{ sshd_xauthlocation }}
+
+
+ClientAliveInterval {{ sshd_clientaliveinterval }}
+ClientAliveCountMax {{ sshd_clientalivecountmax }}
+
+Banner {{ sshd_banner }}
+Subsystem {{ sshd_subsystem }}
+
+AllowUsers {{ sshd_allowusers }} {{ sshd_server_ops_staff }}
+
+
+DenyUsers {{ sshd_denyusers }}
+
+PubkeyAuthentication {{ sshd_pubkeyauthentication }}
+AuthenticationMethods {{ sshd_authenticationmethods }}
+
+{{ sshd_matchusers }}

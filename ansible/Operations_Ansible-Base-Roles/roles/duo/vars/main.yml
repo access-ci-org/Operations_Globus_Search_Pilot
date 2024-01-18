@@ -1,0 +1,3 @@
+xsede_duo_version: xsede-duo_unix-1.9.14
+xsede_duo_tarball_url: "https://software.xsede.org/development/xsede-duo_unix/{{ xsede_duo_version }}.tar.gz"
+xsede_duo_install_dir: "/tmp/{{ xsede-duo_version }}"

@@ -1,0 +1,18 @@
+---
+- name: Stop SSHD_ADMIN
+  service:
+    name: sshd_admin
+    state: stopped
+  become: yes
+
+- name: Start SSHD_ADMIN
+  service: 
+    name: sshd_admin
+    state: started
+  become: yes
+
+- name: Restart SSHD_ADMIN
+  service: 
+    name: sshd_admin
+    state: restarted
+  become: yes

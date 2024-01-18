@@ -1,0 +1,7 @@
+---
+
+- name: set hostname
+  become: yes
+  hostname:
+    name: "{{ host_name }}"
+  when: host_name is defined

@@ -1,0 +1,60 @@
+---
+
+- name: Install the 'build-essential' package group
+  become: yes
+  apt:
+    name: "@build-essential"
+    state: present
+
+- name: Install other dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gettext
+    - libssl-devel
+    - perl
+    - zlib1g
+    - zlib1g-dev
+    
+- name: Get installed version.
+  command: >
+    git --version
+    warn=no
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: git_installed_version
+
+- name: Force git install if the version numbers do not match.
+  set_fact:
+    git_reinstall_from_source: true
+  when:
+    - git_install_from_source_force_update
+    - (git_installed_version.rc == 0) and (git_installed_version.stdout | regex_replace("^.*?([0-9\.]+)$", "\\1") | version_compare(git_version, operator="!="))
+
+- name: Download git.
+  get_url:
+    url: "https://www.kernel.org/pub/software/scm/git/git-{{ git_version }}.tar.gz"
+    dest: "{{ workspace }}/git-{{ git_version }}.tar.gz"
+  when: (git_installed_version.rc != 0) or git_reinstall_from_source
+
+- name: Expand git archive.
+  unarchive:
+    src: "{{ workspace }}/git-{{ git_version }}.tar.gz"
+    dest: "{{ workspace }}"
+    creates: "{{ workspace }}/git-{{ git_version }}/README"
+    copy: false
+  when: (git_installed_version.rc != 0) or git_reinstall_from_source
+
+- name: Build git.
+  command: >
+    {{ item }}
+    chdir={{ workspace }}/git-{{ git_version }}
+  with_items:
+    - make configure
+    - ./configure --prefix=/usr/local
+    - make install
+  when: (git_installed_version.rc != 0) or git_reinstall_from_source
+  become: true

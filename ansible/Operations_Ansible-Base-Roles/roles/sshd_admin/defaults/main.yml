@@ -1,0 +1,39 @@
+---
+# Which template file should be used
+sshd_admin_template_file: 'sshd_admin_config.j2'
+
+# Variables used in the template
+#
+# Note: sshd_admin_allowusers and sshd_server_ops_staff are concantinated in the sshd_config.j2 template
+sshd_admin_allowusers:
+sshd_admin_server_ops_staff: 'ansible'
+
+sshd_admin_protocol: 2
+sshd_admin_port: 2202
+sshd_admin_useprivilegeseparation: 'yes'
+sshd_admin_hostkey: 
+  - '/etc/ssh/ssh_host_rsa_key'
+  - '/etc/ssh/ssh_host_ecdsa_key'
+sshd_admin_loglevel: 'INFO'
+sshd_admin_syslogfacility: 'AUTHPRIV'
+sshd_admin_rsaauthentication: 'no'
+sshd_admin_permitrootlogin: 'no'
+sshd_admin_passwordauthentication: 'no'
+sshd_admin_hostbasedauthentication: 'no'
+sshd_admin_ignoreuserknownhosts: 'no'
+sshd_admin_ignorerhosts: 'yes'
+sshd_admin_challengeresponseauthentication: 'yes'
+sshd_admin_usepam: 'yes'
+sshd_admin_acceptenv: 
+  - 'LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES'
+  - 'LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT'
+  - 'LC_IDENTIFICATION LC_ALL'
+sshd_admin_x11forwarding: 'no'
+sshd_admin_x11uselocalhost: 'no'
+sshd_admin_clientaliveinterval: 600
+sshd_admin_clientalivecountmax: 3
+sshd_admin_banner: '/etc/banner/sshd.banner'
+sshd_admin_subsystem: 'sftp    /usr/libexec/openssh/sftp-server'
+sshd_admin_denyusers: 'apache www-data'
+sshd_admin_pubkeyauthentication: 'no'
+sshd_admin_matchusers: "Match User ansible\n\tPubKeyAuthentication yes"

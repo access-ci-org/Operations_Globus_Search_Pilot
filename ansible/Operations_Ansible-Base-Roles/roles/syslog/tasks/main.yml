@@ -1,0 +1,39 @@
+---
+- name: install rsyslog
+  become: yes
+  package:
+    name: rsyslog
+    state: present
+
+- name: install rsyslog-gnutls
+  become: yes
+  package:
+    name: rsyslog-gnutls
+    state: present
+
+- name: Ensure var_spool_rsyslog exists
+  become: yes
+  file: path=/var/spool/rsyslog state=directory
+
+- name: Install rsyslog_config
+  become: yes
+  template: src=rsyslog.conf.j2 dest=/etc/rsyslog.conf owner=root group=root backup=true
+  notify: Restart RSYSLOG
+  when: rsyslog_mode == "rsyslog_client"
+
+- name: Install rsyslog_config_server
+  become: yes
+  template: src=rsyslog.conf.server.j2 dest=/etc/rsyslog.conf owner=root group=root backup=true
+  notify: Restart RSYSLOG
+  when: rsyslog_mode == "rsyslog_server"
+
+- name: Open firewalld ports for syslog
+  become: yes
+  firewalld:
+    zone: drop
+    service: syslog
+    state: enabled
+    permanent: true
+  notify: Reload FIREWALLD
+  when: rsyslog_mode == "rsyslog_server"
+

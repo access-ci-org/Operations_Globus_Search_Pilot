@@ -1,0 +1,14 @@
+---
+- name: Set Root PW
+  become: yes
+  user: 
+    name: root 
+    update_password: always 
+    password: "{{ pw_root }}"
+
+- name: Set Ansible PW
+  become: yes
+  user: 
+    name: ansible 
+    update_password: always 
+    password: "{{ pw_ansible }}"
