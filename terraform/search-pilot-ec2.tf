@@ -1,18 +1,5 @@
-data "aws_ami" "ubuntu22_lookup" {
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-arm64-server-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  owners = ["099720109477"] # Canonical
-}
-
 resource "aws_instance" "search-pilot" {
-  ami               = data.aws_ami.ubuntu22_lookup.id
+  ami               = "ami-02f278ae3ad20eb32"
   instance_type     = var.instance_type
   availability_zone = "us-east-2a"
   #    associate_public_ip_address = true
@@ -25,4 +12,13 @@ resource "aws_instance" "search-pilot" {
   tags = {
     "Name" = "search-pilot.access-ci.org"
   }
+}
+
+output "current_operations1_ami" {
+  value = aws_instance.search-pilot.ami
+}
+
+resource "aws_eip_association" "search-pilot-eip-association" {
+  instance_id   = aws_instance.search-pilot.id
+  allocation_id = var.elastic_ip_search_pilot
 }
