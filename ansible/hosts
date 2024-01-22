@@ -10,8 +10,8 @@ tag_Name_Ops_Sysops:
         pipenv_config_dgpf: files/pipenv/opsapi-env3
         dgpf_tag: v0.1.0
       hosts:
-        search-pilot.access-ci.org:
-          ansible_host: 3.19.165.63
+        search-pilot.operations.access-ci.org:
+          ansible_host: 18.224.12.75
           ansible_port: 22
 #         ansible_user: ubuntu
 #         ansible_ssh_private_key_file: ~/.ssh/accessops-aws-root.pem

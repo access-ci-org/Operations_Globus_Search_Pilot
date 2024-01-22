@@ -2,21 +2,21 @@
   apt:
     state: present
     pkg:
-      - git
       - nginx
+      - libpq-dev
       - postgresql-client-common
       - postgresql-client-14
-      - libpq-dev
-      - memcached
-      - libmemcached-tools
-      - apache2-dev
 
 # Must run to set Python facts needed for subsequent configurations
 - include_tasks: python3_native.yml
 
-# Must run to set Warhouse facts needed for subsequent configurations
-- include_vars: dgpf_vars.yml
+# Must run to set facts needed for subsequent configurations
+- include_vars: dgpf1_vars.yml
 
-- include_tasks: dgpf_code.yml
+- include_tasks: letsencrypt.yml
 
-- include_tasks: dgpf.yml
+- include_tasks: nginx.yml
+
+- include_tasks: dgpf1_code.yml
+
+- include_tasks: dgpf1.yml

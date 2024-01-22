@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+APP_HOME={{ app_home }}
+MY_HOME={{ letsencrypt_home }}
+MY_APP=$0
+
+CHALLENGE_DIR=$APP_HOME/www/challenge/
+DEPLOY_FILE=/etc/ssl/certs/{{ inventory_hostname }}.chain.pub
+
+TIMESTAMP=`date -Ins`
+echo "*** ${MY_APP} starting at ${TIMESTAMP}"
+python3 $MY_HOME/acme_tiny.py --account-key $MY_HOME/account.key --csr $MY_HOME/domain.csr --acme-dir $CHALLENGE_DIR > $MY_HOME/signed_chain.crt.$TIMESTAMP || exit
+
+cp $MY_HOME/signed_chain.crt.$TIMESTAMP $DEPLOY_FILE
+chmod 644 $DEPLOY_FILE
+
+systemctl restart nginx

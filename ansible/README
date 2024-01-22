@@ -1,5 +1,0 @@
-# Design
-
-webserver_playbook.yml   Everything to setup the server
-
-dgpf.yml                 Configures the dgpf web server

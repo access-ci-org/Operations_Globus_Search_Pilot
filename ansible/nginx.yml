@@ -1,0 +1,42 @@
+##################################
+#
+#  Frontend web server
+#
+##################################
+- name: Put ssl certs in place
+  copy:
+    src: "files/certs/{{ item }}"
+    dest: "/etc/ssl/certs/{{ item }}"
+    mode: 0644
+  with_items:
+    - search-pilot.operations.access-ci.org.pub
+    - search-pilot.operations.access-ci.org.chain.pub
+    - incommon_rsa_chain.pem
+    - incommon-ssl.pem
+
+- name: Put ssl key in place
+  copy:
+    src: "files/certs/{{ item }}"
+    dest: "/etc/ssl/private/{{ item }}"
+    mode: 0600
+  with_items:
+    - search-pilot.operations.access-ci.org.key
+
+- name: Remove default site
+  ansible.builtin.file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
+
+- name: Install nginx site
+  ansible.builtin.template:
+    src: "files/nginx/{{ item }}"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+    mode: 0600
+  with_items:
+    - "nginx.{{ app_name }}"
+
+- name: Enable nginx site
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/nginx.{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/nginx.{{ app_name }}"
+    state: link

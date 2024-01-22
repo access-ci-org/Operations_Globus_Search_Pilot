@@ -1,5 +1,5 @@
 app_source_name: Operations_Globus_Search_Pilot
-app_name: globus_search
+app_name: dgpf1
 app_home: /soft/globus_search-1.0
 app_git: https://github.com/access-ci-org/Operations_Globus_Search_Pilot
 app_django: /soft/globus_search-1.0/PROD/hpc-ed_dgpf

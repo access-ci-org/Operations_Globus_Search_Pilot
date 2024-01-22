@@ -5,12 +5,20 @@
 server {
     listen 443 ssl http2;
     keepalive_timeout 70;
-    ssl_certificate /etc/ssl/certs/operations-api.access-ci.org.chain.pub;
-    ssl_certificate_key /etc/ssl/private/operations-api.access-ci.org.key;
+    ssl_certificate /etc/ssl/certs/search-pilot.operations.access-ci.org.chain.pub;
+    ssl_certificate_key /etc/ssl/private/search-pilot.operations.access-ci.org.key;
     ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
+#   ssl_ciphers HIGH:!aNULL:!MD5;
+#   Replaced 12-7-2022 by JP
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_ecdh_curve secp384r1;
     ssl_session_cache   shared:le_nginx_SSL:10m;
     ssl_session_timeout 10m;
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
 
     location / {
 #       proxy_pass http://dgpf;
@@ -27,5 +35,9 @@ server {
     }
     location /dgpf1/static/ {
         alias {{ app_home }}/www/static/;
+    }
+    location /.well-known/acme-challenge/ {
+        alias /soft/globus_search-1.0/www/challenge/;
+        try_files $uri =404;
     }
 }

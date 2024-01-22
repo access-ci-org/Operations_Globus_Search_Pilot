@@ -1,0 +1,80 @@
+- include_vars: dgpf1_vars.yml
+- include_vars: letsencrypt_vars.yml
+
+##################################
+#
+#   Directory and files
+#
+##################################
+- name: Create directory structure
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ letsencrypt_home }}"
+    - "{{ app_home }}/www/challenge"
+
+- name: Copy as-is executable files
+  ansible.builtin.copy:
+    src: "files/letsencrypt/{{ item }}"
+    dest: "{{ letsencrypt_home }}/{{ item }}"
+    mode: 0755
+  with_items:
+    - acme_tiny.py
+
+- name: Copy templated executable files
+  ansible.builtin.template:
+    src: "files/letsencrypt/{{ item }}.j2"
+    dest: "{{ letsencrypt_home }}/{{ item }}"
+    mode: 0755
+  with_items:
+    - renew_cert.sh
+ 
+- name: Copy as-is regular files
+  ansible.builtin.copy:
+    src: "files/letsencrypt/{{ item }}"
+    dest: "{{ letsencrypt_home }}/{{ item }}"
+    mode: 0644
+  with_items:
+    - domain.csr
+    - README
+
+- name: Copy as-is regular files without replacing (renewed by cron)
+  ansible.builtin.copy:
+    src: "files/letsencrypt/{{ item }}"
+    dest: "{{ letsencrypt_home }}/{{ item }}"
+    mode: 0644
+    force: no
+  with_items:
+    - signed_chain.crt
+
+- name: Copy encrypted regular files without world read
+  ansible.builtin.copy:
+    src: "files/letsencrypt/{{ item }}"
+    dest: "{{ letsencrypt_home }}/{{ item }}"
+    mode: 0640
+    decrypt: yes
+  with_items:
+    - account.key
+    - domain.key
+
+##################################
+#
+#   Configure cron
+#
+##################################
+
+- name: Configure crontab
+  ansible.builtin.cron:
+    name: "letsencrypt"
+    minute: 3
+    hour: 2
+    day: 1
+    month: "*"
+    weekday: "*"
+    job: "{{ letsencrypt_home }}/renew_cert.sh 2>> {{ letsencrypt_home }}/acme_tiny.log"
+    state: present
+    user: root

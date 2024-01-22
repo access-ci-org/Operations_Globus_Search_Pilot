@@ -1,4 +1,4 @@
-- hosts: globus-search
+- hosts: search-pilot.operations.access-ci.org
   gather_facts: yes
   become: true
   become_user: root
@@ -9,4 +9,4 @@
   tasks:
     - include_vars: passwords.yml
 
-    - include_tasks: webserver.yml
+    - include_tasks: application.yml

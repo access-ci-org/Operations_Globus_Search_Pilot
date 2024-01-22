@@ -1,0 +1,22 @@
+- hosts: search-pilot.operations.access-ci.org
+  gather_facts: yes
+  become: true
+  vars:
+    short_name: "{{ inventory_hostname.split('.')[0] | lower }}"
+
+  tasks:
+    - name: Retrieve public ssl files
+      ansible.builtin.fetch:
+        src: "/etc/ssl/certs/{{ item }}"
+        dest: "files/letsencrypt/fetch.{{ short_name }}/search-pilot.operations.access-ci.org.chain.pub"
+        flat: true
+      with_items:
+        - search-pilot.operations.access-ci.org.chain.pub
+
+    - name: Retrieve private ssl files
+      ansible.builtin.fetch:
+        src: "/etc/ssl/private/{{ item }}"
+        dest: "files/letsencrypt/fetch.{{ short_name }}/search-pilot.operations.access-ci.org.key"
+        flat: true
+      with_items:
+        - search-pilot.operations.access-ci.org.key
