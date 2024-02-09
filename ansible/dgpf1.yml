@@ -22,53 +22,52 @@
 #  Backend application
 #
 ##################################
-#- name: Install application config
-#  ansible.builtin.template:
-#    src: "files/apps/{{ app_source_name }}/{{ item }}"
-#    dest: "{{ app_home }}/conf/{{ item | basename | regex_replace('.j2','') }}"
-#    owner: software
-#    group: admin
-#    mode: 0644
-#  with_items:
-#    - "{{ app_name }}.gunicorn.conf.py.j2"
-#    - "{{ app_name }}.conf.j2"
+- name: Install application config
+  ansible.builtin.template:
+    src: "files/apps/{{ app_source_name }}/{{ item }}"
+    dest: "{{ app_home }}/conf/{{ item | basename | regex_replace('.j2','') }}"
+    owner: software
+    group: admin
+    mode: 0644
+  with_items:
+    - "{{ app_runtime_name }}.gunicorn.conf.py.j2"
+    - "{{ app_runtime_name }}.conf.j2"
 
-#- name: Install application sbin
-#  ansible.builtin.template:
-#    src: "files/apps/{{ app_source_name }}/{{ item }}"
-#    dest: "{{ app_home }}/sbin/{{ item | basename | regex_replace('.j2','') }}"
-#    owner: software
-#    group: admin
-#    mode: 0755
-#  with_items:
-#    - "{{ app_name }}.sh.j2"
-#    - "manage.api.sh.j2"
+- name: Install application sbin
+  ansible.builtin.template:
+    src: "files/apps/{{ app_source_name }}/{{ item }}"
+    dest: "{{ app_home }}/sbin/{{ item | basename | regex_replace('.j2','') }}"
+    owner: software
+    group: admin
+    mode: 0755
+  with_items:
+    - "{{ app_runtime_name }}.sh.j2"
+    - "manage.api.sh.j2"
 
-#- name: Install application systemd services
-#  ansi#ble.builtin.template:
-#    src: "files/apps/{{ app_source_name }}/{{ item }}.j2"
-#    dest: "/etc/systemd/system/{{ item }}"
-#  with_items:
-#    - "{{ app_name }}.service"
+- name: Install application systemd services
+  ansi#ble.builtin.template:
+    src: "files/apps/{{ app_source_name }}/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - "{{ app_runtime_name }}.service"
 
-#- name: Enable backend services
-#  ansible.builtin.systemd:
-#    name: "{{ item }}"
-#    enabled: true
-#    state: started
-#    daemon_reload: true
-#  with_items:
-#    - "{{ app_name }}.service"
+- name: Enable backend services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+  with_items:
+    - "{{ app_runtime_name }}.service"
 
 #################################
 #
 #    Static content
 #
 ##################################
-#- name: Collect static content
-#  become_user: software
-#  ansible.builtin.command: "{{ app_home }}/sbin/manage.api.sh collectstatic --noinput"
-
+- name: Collect static content
+  become_user: software
+  ansible.builtin.command: "{{ app_home }}/sbin/manage.prod.sh collectstatic --noinput"
 ##################################
 #
 #  Backend memcached service

@@ -14,18 +14,18 @@ Manualliy followed these instructions to obtain the initial certificate:
    $ openssl req -new -sha256 -key domain.key -subj "/CN=search-pilot.operations.access-ci.org" > domain.csr
 
 4. Setup challenge web dir
-   $ mkdir /soft/globus_search-1.0/www/challenge/
+   $ mkdir /soft/search_pilot-1.0/www/challenge/
 
    # Place in /etc/nginx/sites-enabled/nginx.dgpf1
     location /.well-known/acme-challenge/ {
-        alias /soft/globus_search-1.0/www/challenge/;
+        alias /soft/search_pilot-1.0/www/challenge/;
         try_files $uri =404;
     }
 
     $ systemctl restart nginx
 
 5. Obtain certificate
-   $ python3 acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /soft/globus_search-1.0/www/challenge/ > ./signed_chain.crt
+   $ python3 acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /soft/search_pilot-1.0/www/challenge/ > ./signed_chain.crt
 
 
 6. Copy everythingn back to GitHub/files/letsecrypt/

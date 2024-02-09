@@ -1,7 +1,9 @@
-app_source_name: Operations_Globus_Search_Pilot
-app_name: dgpf1
-app_home: /soft/globus_search-1.0
-app_git: https://github.com/access-ci-org/Operations_Globus_Search_Pilot
-app_django: /soft/globus_search-1.0/PROD/hpc-ed_dgpf
-web_home: /soft/globus-search.access-ci.org
-warehouse_django: /soft/globus_search-1.0/PROD/hpc-ed_dgpf
+# The subdirectory where ansible configurationn files are under files/apps, and for code in the source GitHub repo
+app_source_name: dgpf1
+# The short appliation runtime name
+app_runtime_name: dgpf1
+app_home: /soft/search_pilot-1.0/dgpf1
+app_git: https://github.com/HPC-ED/hpc-ed_django-globus-portal-framework
+app_django: /soft/search_pilot-1.0/dgpf1/PROD/dgpf1
+app_web_home: /soft/search_pilot-1.0/dgpf1/www
+app_pipenv_config: files/pipenv/dgpf-env1

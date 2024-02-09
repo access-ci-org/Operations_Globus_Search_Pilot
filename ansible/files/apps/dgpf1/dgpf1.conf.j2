@@ -7,13 +7,13 @@
     "DJANGO_USER": "info_django",
     "DJANGO_PASS": "{{ DJANGO_PASS }}",
     "DJANGO_SECRET_KEY": "{{ DJANGO_SECRET_KEY }}",
-    "SETTINGS_MODE": "ROUTER",
+    "SETTINGS_MODE": "SERVER",
     "STATIC_ROOT": "{{ app_home }}/www/static",
-    "G2_LOG": "{{ app_home }}/var/django_mgmt.log",
-    "DB_LOG": "{{ app_home }}/var/django_mgmt.db.log",
+    "G2_LOG": "{{ app_home }}/var/{{ app_runtime_name }}.log",
+    "DB_LOG": "{{ app_home }}/var/{{ app_runtime_name }}.db.log",
     "SYSLOG_SOCK": "/dev/log",
-    "API_BASE": "/dgpf1",
-    "SUB_SITE": "dgpf1/",
-    "APP_LOG": "/soft/globus_search-1.0/var/dgpf.log",
-    "APP_VERSION": "v0.1.x"
+    "API_BASE": "/wh2",
+    "SUB_SITE": "wh2/",
+    "APP_LOG": "{{ app_home }}/var/{{ app_runtime_name }}.log",
+    "APP_VERSION": "v0.0.x"
 }

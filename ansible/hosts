@@ -7,7 +7,6 @@ tag_Name_Ops_Sysops:
   children:
     search-pilot:
       vars:
-        pipenv_config_dgpf: files/pipenv/opsapi-env3
         dgpf_tag: v0.1.0
       hosts:
         search-pilot.operations.access-ci.org:

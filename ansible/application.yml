@@ -13,9 +13,9 @@
 # Must run to set facts needed for subsequent configurations
 - include_vars: dgpf1_vars.yml
 
-- include_tasks: letsencrypt.yml
+  #- include_tasks: letsencrypt.yml
 
-- include_tasks: nginx.yml
+  #- include_tasks: nginx.yml
 
 - include_tasks: dgpf1_code.yml
 

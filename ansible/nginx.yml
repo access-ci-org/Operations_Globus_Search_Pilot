@@ -33,10 +33,10 @@
     dest: "/etc/nginx/sites-available/{{ item }}"
     mode: 0600
   with_items:
-    - "nginx.{{ app_name }}"
+    - "nginx.{{ app_runtime_name }}"
 
 - name: Enable nginx site
   ansible.builtin.file:
-    src: "/etc/nginx/sites-available/nginx.{{ app_name }}"
-    dest: "/etc/nginx/sites-enabled/nginx.{{ app_name }}"
+    src: "/etc/nginx/sites-available/nginx.{{ app_runtime_name }}"
+    dest: "/etc/nginx/sites-enabled/nginx.{{ app_runtime_name }}"
     state: link
