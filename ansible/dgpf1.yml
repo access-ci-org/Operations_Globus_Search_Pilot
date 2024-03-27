@@ -30,7 +30,7 @@
     group: admin
     mode: 0644
   with_items:
-    - "{{ app_runtime_name }}.gunicorn.conf.py.j2"
+    - "{{ app_runtime_name }}.gunicorn.conf.j2"
     - "{{ app_runtime_name }}.conf.j2"
 
 - name: Install application sbin
@@ -45,7 +45,7 @@
     - "manage.api.sh.j2"
 
 - name: Install application systemd services
-  ansi#ble.builtin.template:
+  ansible.builtin.template:
     src: "files/apps/{{ app_source_name }}/{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   with_items:
@@ -67,7 +67,7 @@
 ##################################
 - name: Collect static content
   become_user: software
-  ansible.builtin.command: "{{ app_home }}/sbin/manage.prod.sh collectstatic --noinput"
+  ansible.builtin.command: "{{ app_home }}/sbin/manage.api.sh collectstatic --noinput"
 ##################################
 #
 #  Backend memcached service

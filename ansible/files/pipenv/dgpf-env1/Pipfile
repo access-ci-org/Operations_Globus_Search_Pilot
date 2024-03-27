@@ -12,6 +12,7 @@ django-globus-portal-framework = "*"
 #globus-sdk = "*"
 psycopg2 = "==2.9.*"
 pytz = "*"
+gunicorn = "==20.1.*"
 
 [requires]
 python_version = "3.10"

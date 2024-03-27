@@ -57,23 +57,23 @@
     - "{{ app_home }}/www"
     - "{{ app_home }}/www/static"
 
-- name: Install DGPF conf/django_prod_mgmt.conf file
-  become: true
-  template:
-    src: "files/apps/{{ app_source_name }}/django_prod_mgmt.conf.j2"
-    dest: "{{ app_home }}/conf/django_prod_mgmt.conf"
-    owner: software
-    group: admin
-    mode: 0644
+#- name: Install DGPF conf/django_prod_mgmt.conf file
+#  become: true
+#  template:
+#    src: "files/apps/{{ app_source_name }}/django_prod_mgmt.conf.j2"
+#    dest: "{{ app_home }}/conf/django_prod_mgmt.conf"
+#    owner: software
+#    group: admin
+#    mode: 0644
 
-- name: Install dgpf sbin files
-  become: true
-  template:
-    src: "files/apps/{{ app_source_name }}/manage.prod.sh.j2"
-    dest: "{{ app_home }}/sbin/manage.prod.sh"
-    owner: software
-    group: admin
-    mode: 0755
+#- name: Install dgpf sbin files
+#  become: true
+#  template:
+#    src: "files/apps/{{ app_source_name }}/manage.prod.sh.j2"
+#    dest: "{{ app_home }}/sbin/manage.prod.sh"
+#    owner: software
+#    group: admin
+#    mode: 0755
 
 ##################################
 #

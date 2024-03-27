@@ -10,7 +10,7 @@ RestartSec=1
 User=software
 Group=software
 WorkingDirectory={{ app_home }}
-ExecStart={{ app_home }}/python/bin/gunicorn --config={{ app_home }}/conf/{{ app_runtime_name }}.gunicorn.conf.py {{ app_runtime_name }}.wsgi:application
+ExecStart={{ app_home }}/python/bin/gunicorn --config={{ app_home }}/conf/{{ app_runtime_name }}.gunicorn.conf {{ app_runtime_name }}.wsgi:application
 #ExecStart=/.venv/bin/python /.venv/bin/gunicorn --bind :8080 --workers 3 {{ app_runtime_name }}.wsgi:application
 KillMode=mixed
 TimeoutStopSec=5
