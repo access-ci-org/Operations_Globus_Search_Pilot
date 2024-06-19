@@ -1,0 +1,3 @@
+[submodule "ansible/Operations_Ansible-Base-Roles"]
+	path = ansible/Operations_Ansible-Base-Roles
+	url = git@github.com:access-ci-org/Operations_Ansible-Base-Roles.git
