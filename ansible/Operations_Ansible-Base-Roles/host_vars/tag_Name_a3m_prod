@@ -1,4 +1,0 @@
----
-
-cron_jobs:
-  - {name: 'echo hostname', job: 'hostname', user: 'grogers', minute: '0',  hour: '*", day: '*", month: '*', weekday: '*',  state: 'present' }

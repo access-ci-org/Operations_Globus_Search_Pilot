@@ -1,6 +1,0 @@
----
-- name: Install apache
-  become: yes
-  package: 
-    name: httpd
-    state: present

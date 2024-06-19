@@ -1,7 +1,0 @@
----
-- hosts: tag_Name_a3m_dev
-  gather_facts: yes
-  remote_user: ansible
-  roles:
-    - { role : base_ssh_keys, tags: base_ssh_keys}
-    - { role: sudo, tags: [ "sudo", "authentication" ] }
