@@ -8,7 +8,7 @@ Manualliy followed these instructions to obtain the initial certificate:
    $ openssl genrsa 4096 >account.key
 
 2. Generate domain.key
-   $  openssl genrsa 4096 >domain.key
+   $ openssl genrsa 4096 >domain.key
 
 3. Generate single domain domain.csr
    $ openssl req -new -sha256 -key domain.key -subj "/CN=search-pilot.operations.access-ci.org" > domain.csr
@@ -18,16 +18,16 @@ Manualliy followed these instructions to obtain the initial certificate:
 
    # Place in /etc/nginx/sites-enabled/nginx.dgpf1
     location /.well-known/acme-challenge/ {
-        alias /soft/search_pilot-1.0/www/challenge/;
+        alias /soft/search_pilot-1.0/dgpf1/www/challenge/;
         try_files $uri =404;
     }
 
-    $ systemctl restart nginx
+   $ systemctl restart nginx
 
 5. Obtain certificate
    $ python3 acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /soft/search_pilot-1.0/www/challenge/ > ./signed_chain.crt
 
 
-6. Copy everythingn back to GitHub/files/letsecrypt/
+6. Copy everythingn back to GitHub/files/letsencrypt/
 
-7. Use Ansible to push configuraiton to server using letsencrypt.yml
+7. Use Ansible to push configuration to server using letsencrypt.yml

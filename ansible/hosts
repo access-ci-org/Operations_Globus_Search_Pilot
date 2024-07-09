@@ -7,7 +7,7 @@ tag_Name_Ops_Sysops:
   children:
     search-pilot:
       vars:
-        dgpf_tag: v0.7.0
+        dgpf_tag: v0.7.1
       hosts:
         search-pilot.operations.access-ci.org:
           ansible_host: 18.224.12.75

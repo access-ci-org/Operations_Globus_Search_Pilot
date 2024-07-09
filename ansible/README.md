@@ -12,7 +12,7 @@ Application support framework (directory and nginx server) supportting one or mo
 
 - dgpf1.yml                    Configures the first dgpf application
 
-$ ansible-playbook -i hosts --vault-id ~/ansible_vault_password application_playbook.yml --limit=service-index.operations.access-ci.org
+$ ansible-playbook -i hosts --vault-id ~/ansible_vault_password application_playbook.yml --limit=search-pilot.operations.access-ci.org
 
 ### Useful commands
 
@@ -23,7 +23,7 @@ $ ansible localhost            --vault-id=~/ansible_vault_password -m debug -a v
 # In /etc/nginx/sites-enabled/nginx.serviceindex update per comments "server { listen 80 ..." entry
 # systemctl restart nginx
 # Fetch renew_cert.sh results
-$ ansible-playbook -i hosts --vault-id ~/ansible_vault_password fetch_ssl_playbook.yml --limit=service-index.operations.access-ci.org
+$ ansible-playbook -i hosts --vault-id ~/ansible_vault_password fetch_ssl_playbook.yml --limit=search-pilot.operations.access-ci.org
 # Copy fetched file to files/letsencrypt/signed_chain.crt
 # Undo nginx.serviceindex update, restart nginx
 
