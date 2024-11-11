@@ -70,9 +70,9 @@
 - name: Configure crontab
   ansible.builtin.cron:
     name: "letsencrypt"
-    minute: 3
-    hour: 2
-    day: 1
+    minute: "3"
+    hour: "2"
+    day: "1"
     month: "*"
     weekday: "*"
     job: "{{ letsencrypt_home }}/renew_cert.sh 2>> {{ letsencrypt_home }}/acme_tiny.log"

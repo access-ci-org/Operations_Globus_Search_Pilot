@@ -6,4 +6,4 @@ app_home: /soft/search_pilot-1.0/dgpf1
 app_git: https://github.com/HPC-ED/hpc-ed_django-globus-portal-framework
 app_django: /soft/search_pilot-1.0/dgpf1/PROD/dgpf1
 app_web_home: /soft/search_pilot-1.0/dgpf1/www
-app_pipenv_config: files/pipenv/dgpf-env1
+app_pipenv_config: files/pipenv/dgpf-env3

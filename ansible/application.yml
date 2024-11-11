@@ -19,4 +19,4 @@
 
 - include_tasks: dgpf1_code.yml
 
-  #- include_tasks: dgpf1.yml
+- include_tasks: dgpf1.yml
