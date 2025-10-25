@@ -5,7 +5,7 @@ server {
     return 301 https://$host$request_uri;
     # Replace above return line with the followign for renewing the certifiate
 #    location /.well-known/acme-challenge/ {
-#        alias /soft/search_pilot-1.0/www/challenge/;
+#        alias /soft/search_pilot-1.0/dgpf1/www/challenge/;
 #        try_files $uri =404;
 #    }
 }
@@ -55,7 +55,7 @@ server {
         alias {{ app_home }}/www/static/;
     }
     location /.well-known/acme-challenge/ {
-        alias /soft/search_pilot-1.0/www/challenge/;
+        alias /soft/search_pilot-1.0/dgpf1/www/challenge/;
         try_files $uri =404;
     }
 }
