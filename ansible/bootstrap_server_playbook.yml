@@ -18,6 +18,8 @@
    - { role: syslog, tags: syslog }
      #   - { role: fail2ban, tags: [ "fail2ban", "network" ] }
    - { role: sudo, tags: [ "sudo", "authentication" ] }
+   - { role: copy-fail-blacklist, tags: [ "copy-fail-blacklist" ] }
+   - { role: dirty-frag-blacklist, tags: [ "dirty-frag-blacklist" ] }
      #   - role: duo
      #     vars:
      #       duo_integration_key: "{{ DUO_IKEY }}"
